@@ -1,0 +1,14 @@
+Autor: Guillermo Fernandez Romero
+Fecha: 3-Mayo-2023 15:09
+# | Caracter
+include | Identificador
+< | OperadorRelacional
+stdio | Identificador
+> | OperadorRelacional
+# | Caracter
+include | Identificador
+< | OperadorRelacional
+math | Identificador
+> | OperadorRelacional
+350.234 | Numero
++ | OperadorTermino
