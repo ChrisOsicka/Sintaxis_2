@@ -1,30 +1,17 @@
 #include<stdio.h>
 #include<math.h>
 #include<iostream>
+#include<conio.h>
 
-float a,b,c;
+float x25, x26, x27, x28;
 
 void main() // Funcion principal
 {
-    a=(3+5)*8-(10-4)/2;
-    b=8;
-    printf("Valor de c = ",c);
-    scanf("%f",&c);
-    if (c%2==0)
-    {
-        printf("\nc es par\t\tITQ");
-        if (c==10)
-            printf("El valor de c = ",c);
-    }
-    else
-    {
-        printf("\nc es impar\t\tITQ");
-    }
-    b++;
-    c--;
-    c+=(10-b);
-    b-=9;
-    printf("El valor de a = ",a);
-    printf("El valor de b = ",b);
-    printf("El valor de d = ",d);
+    x25=(3+5)*8-(10-4)/2;
+    x26=3+5;
+    printf("\tValor de x27 = ");
+    scanf("%f",&x27);
+    printf("\n\tValor guardado con exito\n");
+    printf("\tValor de x25 = ", x25);
+    //x28=x27++; 
 }

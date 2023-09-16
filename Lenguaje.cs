@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 /*
@@ -31,6 +32,8 @@ namespace Sintaxis_2
             lista = new List<Variable>();
             stack = new Stack<float>();
         }
+
+
 
         //Programa  -> Librerias? Variables? Main
         public void Programa()
@@ -91,6 +94,10 @@ namespace Sintaxis_2
             }
             return 0;
         }
+
+
+
+
         // Libreria -> #include<Identificador(.h)?>
         private void Libreria()
         {
@@ -105,6 +112,7 @@ namespace Sintaxis_2
             }
             match(">");
         }
+
         //Librerias -> Libreria Librerias?
         private void Librerias()
         {
@@ -114,6 +122,9 @@ namespace Sintaxis_2
                 Librerias();
             }
         }
+
+
+
         //Variables -> tipo_dato ListaIdentificadores; Variables?
         private void Variables()
         {
@@ -131,6 +142,8 @@ namespace Sintaxis_2
                 Variables();
             }
         }
+
+
         //ListaIdentificadores -> identificador (,ListaIdentificadores)?
         private void ListaIdentificadores(Variable.TiposDatos tipo)
         {
@@ -149,6 +162,8 @@ namespace Sintaxis_2
                 ListaIdentificadores(tipo);
             }
         }
+
+
         //BloqueInstrucciones -> { ListaInstrucciones ? }
         private void BloqueInstrucciones(bool ejecuta)
         {
@@ -180,7 +195,7 @@ namespace Sintaxis_2
             {
                 Scanf(ejecuta);
             }
-             else if (getContenido() == "if")
+            else if (getContenido() == "if")
             {
                 If(ejecuta);
             }
@@ -201,6 +216,9 @@ namespace Sintaxis_2
                 Asignacion(ejecuta);
             }
         }
+
+
+
         //Asignacion -> identificador = Expresion;
         private void Asignacion(bool ejecuta)
         {
@@ -221,10 +239,12 @@ namespace Sintaxis_2
                 if (getContenido() == "++")
                 {
                     match("++");
+                    Modifica(variable, getValor(variable) + 1);
                 }
                 else
                 {
                     match("--");
+                    Modifica(variable, getValor(variable) - 1);
                 }
             }
             else if (getClasificacion() == Tipos.IncrementoFactor)
@@ -256,10 +276,12 @@ namespace Sintaxis_2
             log.WriteLine(" = " + resultado);
             if (ejecuta)
             {
-                Modifica(variable,resultado);
+                Modifica(variable, resultado);
             }
             match(";");
         }
+
+
         //While -> while(Condicion) BloqueInstrucciones | Instruccion
         private void While(bool ejecuta)
         {
@@ -343,12 +365,12 @@ namespace Sintaxis_2
 
             switch (operador)
             {
-                case "==" : return R2==R1;
-                case ">"  : return R2>R1;
-                case ">=" : return R2>=R1;
-                case "<"  : return R2<R1;
-                case "<=" : return R2<=R1;
-                default   : return R2!=R1;
+                case "==": return R2 == R1;
+                case ">": return R2 > R1;
+                case ">=": return R2 >= R1;
+                case "<": return R2 < R1;
+                case "<=": return R2 <= R1;
+                default: return R2 != R1;
             }
         }
         //If -> if (Condicion) BloqueInstrucciones | Instruccion (else BloqueInstrucciones | Instruccion)?
@@ -387,11 +409,17 @@ namespace Sintaxis_2
         {
             match("printf");
             match("(");
+
             if (ejecuta)
             {
-                Console.Write(getContenido());
+                string contenido = getContenido().Replace("\"", ""); //Reemplaza las comillas al identificarlas con el simbolo especial \ para marcarlas como caracter legible para la comparacion, y las reemplaza por un espacio en blanco
+                contenido = contenido.Replace("\\n", "\n");
+                contenido = contenido.Replace("\\t", "\t");
+                Console.Write(contenido);
+
             }
             match(Tipos.Cadena);
+
             if (getContenido() == ",")
             {
                 match(",");
@@ -404,7 +432,11 @@ namespace Sintaxis_2
             match(")");
             match(";");
         }
+
+
+
         //Scanf -> scanf(cadena,&Identificador);
+
         private void Scanf(bool ejecuta)
         {
             match("scanf");
@@ -422,7 +454,7 @@ namespace Sintaxis_2
             {
                 string captura = "" + Console.ReadLine();
                 float resultado = float.Parse(captura);
-                Modifica(variable,resultado);
+                Modifica(variable, resultado);
             }
             match(")");
             match(";");
@@ -454,9 +486,12 @@ namespace Sintaxis_2
                 float R2 = stack.Pop();
                 float R1 = stack.Pop();
                 if (operador == "+")
-                    stack.Push(R1+R2);
+                    stack.Push(R1 + R2);
+
                 else
-                    stack.Push(R1-R2);
+                    stack.Push(R1 - R2);
+
+
             }
         }
         //Termino -> Factor PorFactor
@@ -477,9 +512,9 @@ namespace Sintaxis_2
                 float R2 = stack.Pop();
                 float R1 = stack.Pop();
                 if (operador == "*")
-                    stack.Push(R1*R2);
+                    stack.Push(R1 * R2);
                 else
-                    stack.Push(R1/R2);
+                    stack.Push(R1 / R2);
             }
         }
         //Factor -> numero | identificador | (Expresion)
