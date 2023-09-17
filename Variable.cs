@@ -31,6 +31,7 @@ namespace Sintaxis_2
         }
         public void setValor(float valor)
         {
+            this.valor = valor;
         }
         public float getValor()
         {

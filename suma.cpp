@@ -12,6 +12,7 @@ void main() // Funcion principal
     printf("\tValor de x27 = ");
     scanf("%f",&x27);
     printf("\n\tValor guardado con exito\n");
-    printf("\tValor de x25 = ", x25);
-    //x28=x27++; 
+    printf("\tValor de x26 = ",x26);
+    x28++; 
+    printf("\tValor de x25 = ",x25);
 }

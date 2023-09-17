@@ -228,6 +228,8 @@ namespace Sintaxis_2
             }
             log.Write(getContenido() + " = ");
             string variable = getContenido();
+            float valor = getValor(variable);
+
             match(Tipos.Identificador);
             if (getContenido() == "=")
             {
@@ -239,13 +241,17 @@ namespace Sintaxis_2
                 if (getContenido() == "++")
                 {
                     match("++");
-                    Modifica(variable, getValor(variable) + 1);
+                    log.Write(valor);
+                    valor++;
+                    stack.Push(valor);
                 }
+
                 else
                 {
                     match("--");
                     Modifica(variable, getValor(variable) - 1);
                 }
+                //Expresion();
             }
             else if (getClasificacion() == Tipos.IncrementoFactor)
             {
@@ -270,8 +276,9 @@ namespace Sintaxis_2
                 {
                     match("%=");
                 }
-                Expresion();
+                //Expresion();
             }
+
             float resultado = stack.Pop();
             log.WriteLine(" = " + resultado);
             if (ejecuta)
@@ -427,7 +434,11 @@ namespace Sintaxis_2
                 {
                     throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
                 }
+                string variable = getContenido();
+                float valor = getValor(variable);
+                Console.Write(valor);
                 match(Tipos.Identificador);
+                
             }
             match(")");
             match(";");
@@ -449,12 +460,20 @@ namespace Sintaxis_2
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
             }
             string variable = getContenido();
+            
             match(Tipos.Identificador);
             if (ejecuta)
             {
                 string captura = "" + Console.ReadLine();
                 float resultado = float.Parse(captura);
+                /*
+                if(resultado < 48 && resultado > 57)
+                {
+                    throw new Error("de sintaxis, la variable <" + getContenido() + "> no tiene un valor numerico", log, linea, columna);
+                }
+                */
                 Modifica(variable, resultado);
+
             }
             match(")");
             match(";");
@@ -513,8 +532,12 @@ namespace Sintaxis_2
                 float R1 = stack.Pop();
                 if (operador == "*")
                     stack.Push(R1 * R2);
-                else
+
+                if (operador == "/")
                     stack.Push(R1 / R2);
+                                
+                if (operador == "%")
+                    stack.Push(R1 % R2);
             }
         }
         //Factor -> numero | identificador | (Expresion)
