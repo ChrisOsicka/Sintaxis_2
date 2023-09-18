@@ -229,6 +229,7 @@ namespace Sintaxis_2
             log.Write(getContenido() + " = ");
             string variable = getContenido();
             float valor = getValor(variable);
+            stack.Push(valor);
 
             match(Tipos.Identificador);
             if (getContenido() == "=")
@@ -241,42 +242,60 @@ namespace Sintaxis_2
                 if (getContenido() == "++")
                 {
                     match("++");
-                    log.Write(valor);
                     valor++;
                     stack.Push(valor);
                 }
 
-                else
+                if (getContenido() == "--")
                 {
                     match("--");
-                    Modifica(variable, getValor(variable) - 1);
+                    valor--;
+                    stack.Push(valor);
                 }
-                //Expresion();
-            }
-            else if (getClasificacion() == Tipos.IncrementoFactor)
-            {
 
                 if (getContenido() == "+=")
                 {
                     match("+=");
+                    Expresion();
+                    float stackval = stack.Pop();
+                    valor += stackval;
+                    stack.Push(valor);
                 }
                 else if (getContenido() == "-=")
                 {
                     match("-=");
+                    Expresion();
+                    float stackval = stack.Pop();
+                    valor -= stackval;
+                    stack.Push(valor);
                 }
-                else if (getContenido() == "*=")
+            }
+            else if (getClasificacion() == Tipos.IncrementoFactor)
+            {
+                if (getContenido() == "*=")
                 {
                     match("*=");
+                    Expresion();
+                    float stackval = stack.Pop();
+                    valor *= stackval;
+                    stack.Push(valor);
                 }
                 else if (getContenido() == "/=")
                 {
                     match("/=");
+                    Expresion();
+                    float stackval = stack.Pop();
+                    valor /= stackval;
+                    stack.Push(valor);
                 }
                 else if (getContenido() == "%=")
                 {
                     match("%=");
+                    Expresion();
+                    float stackval = stack.Pop();
+                    valor %= stackval;
+                    stack.Push(valor);
                 }
-                //Expresion();
             }
 
             float resultado = stack.Pop();
@@ -346,6 +365,8 @@ namespace Sintaxis_2
         //Incremento -> Identificador ++ | --
         private void Incremento(bool ejecuta)
         {
+            string variable = getContenido();
+            float valor = getValor(variable);
             if (!Existe(getContenido()))
             {
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
@@ -354,10 +375,15 @@ namespace Sintaxis_2
             if (getContenido() == "++")
             {
                 match("++");
+                valor++;
+                Modifica(variable, valor);
             }
             else
             {
                 match("--");
+                valor--;
+                Modifica(variable, valor);
+
             }
         }
         //Condicion -> Expresion OperadorRelacional Expresion
@@ -465,13 +491,14 @@ namespace Sintaxis_2
             if (ejecuta)
             {
                 string captura = "" + Console.ReadLine();
-                float resultado = float.Parse(captura);
-                /*
-                if(resultado < 48 && resultado > 57)
-                {
-                    throw new Error("de sintaxis, la variable <" + getContenido() + "> no tiene un valor numerico", log, linea, columna);
+                try{
+                    float res = float.Parse(captura);
                 }
-                */
+                catch(Exception)
+                {
+                    throw new Error("de sintaxis, la variable <" + variable + "> no es un numero", log, linea, columna);
+                }
+                float resultado = float.Parse(captura);
                 Modifica(variable, resultado);
 
             }
@@ -508,9 +535,7 @@ namespace Sintaxis_2
                     stack.Push(R1 + R2);
 
                 else
-                    stack.Push(R1 - R2);
-
-
+                    stack.Push(R1 - R2);     
             }
         }
         //Termino -> Factor PorFactor
@@ -555,6 +580,7 @@ namespace Sintaxis_2
                 {
                     throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
                 }
+                stack.Push(float.Parse(getContenido()));
                 match(Tipos.Identificador);
             }
             else
