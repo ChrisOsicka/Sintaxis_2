@@ -1,13 +1,7 @@
 Autor: Guillermo Fernandez Romero
 Fecha: 3-Mayo-2023 15:09
-x25 =  3 5 + 8 * 10 4 - 2 / - = 61
-x26 =  3 5 + = 8
-x28 =  = 1
------------------
-V a r i a b l e s
------------------
-x25 Float = 61
-x26 Float = 8
-x27 Float = 2
-x28 Float = 1
------------------
+c =  20 = 20
+a =  + = 0
+ 1 2 1 1i =  0 = 0
+For: i
+ 10Error: de sintaxis, se espera un <)> en la linea 26 columna 30
