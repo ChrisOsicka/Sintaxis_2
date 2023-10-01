@@ -312,7 +312,7 @@ namespace Sintaxis_2
                 }
                 else
                 {
-                    throw new Error("de semantica, no se puede asignar in <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
+                    throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
                 }
             }
             match(";");
@@ -372,7 +372,7 @@ namespace Sintaxis_2
             {
                 ejecuta = Condicion() && ejecuta;
                 match(";");
-                //resultado = Incremento();
+                resultado = Incremento();
                 match(")");
                 if (getContenido() == "{")
                 {
@@ -397,8 +397,10 @@ namespace Sintaxis_2
         }
 
         //Incremento -> Identificador ++ | --
-        private float Incremento(bool ejecuta)
+        private float Incremento()
         {
+            float resultado = 0;
+            string variable = getContenido();
             if (!Existe(getContenido()))
             {
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
@@ -407,12 +409,14 @@ namespace Sintaxis_2
             if (getContenido() == "++")
             {
                 match("++");
+                resultado = getValor(variable) + 1;
             }
             else
             {
                 match("--");
+                resultado = getValor(variable) - 1;
             }
-            return 0;
+            return resultado;
         }
         //Condicion -> Expresion OperadorRelacional Expresion
         private bool Condicion()
@@ -622,7 +626,44 @@ namespace Sintaxis_2
         }
         float castea(float resultado, Variable.TiposDatos tipoDato)
         {
-            return 0;
+            if(tipoDato == Variable.TiposDatos.Char)
+            {
+                float residuo = resultado%1;
+                resultado = resultado%256;
+                resultado-=(char)(residuo);
+
+                /*
+                if(resultado%1 >= 5)
+                {
+                    resultado++;
+                }
+                */
+                return resultado;
+                
+                
+            }
+
+            if(tipoDato == Variable.TiposDatos.Int)
+            {
+                float residuo = resultado%1;
+                resultado = resultado%65556;
+                resultado-=(int)(residuo);
+
+                /*
+                if(resultado%1 >= 5)
+                {
+                    resultado++;
+                }
+                */
+                return resultado;
+                
+            }
+
+            else
+            {
+                return resultado;
+            }
+
         }
     }
 }

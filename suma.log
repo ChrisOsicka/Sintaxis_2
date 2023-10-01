@@ -1,7 +1,5 @@
 Autor: Guillermo Fernandez Romero
 Fecha: 3-Mayo-2023 15:09
-c =  20 = 20
-a =  + = 0
- 1 2 1 1i =  0 = 0
-For: i
- 10Error: de sintaxis, se espera un <)> en la linea 26 columna 30
+c =  257.6 = 257.6
+a =  = 1.6000061
+Error: de semantica, no se puede asignar un <Float> a un <Char> en la linea 13 columna 19

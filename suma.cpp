@@ -8,29 +8,34 @@ float c;
 
 void main() // Funcion principal
 {
-    c = 20;
+    c = 257.6;
     printf("C = ",c);
-    a = (char)((char)(c) + (float)(b));
+    a = (char)(c);
+    printf("\na = ",a);
 
-    if (1 == 2)
+    //a = (char)((char)(c) + (float)(b));
+/*
+    if (1 == 1)
     {
-        printf("Hola");
-        if (1==1)
+        printf("\nHola");
+        if (1==2)
         {
             printf(" a todos");
         }
         else
         {
-            printf(" a nadie");
+            printf(" a nadie\n");
 
-            for (i=0; i<10; i++)
+            for (i=0; i<3; i++)
             {
-                printf("Hola");
+                printf("\nHola ", i);
             }
+
         }
     }
     else
     {
-        printf("mundo\n");
+        printf("\nmundo\n");
     }
+*/
 }
