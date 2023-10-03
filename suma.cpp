@@ -8,13 +8,13 @@ float c;
 
 void main() // Funcion principal
 {
-    c = 257.6;
+    c = 259.5;
     printf("C = ",c);
     a = (char)(c);
     printf("\na = ",a);
 
-    //a = (char)((char)(c) + (float)(b));
-/*
+    a = (char)((char)(c) + (float)(b));
+
     if (1 == 1)
     {
         printf("\nHola");
@@ -26,10 +26,12 @@ void main() // Funcion principal
         {
             printf(" a nadie\n");
 
-            for (i=0; i<3; i++)
+            for (i=0; i<5; i++)
             {
                 printf("\nHola ", i);
+                printf("\n");
             }
+            printf("\n");
 
         }
     }
@@ -37,5 +39,16 @@ void main() // Funcion principal
     {
         printf("\nmundo\n");
     }
-*/
+ 
+    i=0;
+
+
+    while( i<5 )
+    {
+        printf("\nAdios\n");
+        i++;
+    }
+
+
+
 }

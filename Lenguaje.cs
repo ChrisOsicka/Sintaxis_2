@@ -324,20 +324,41 @@ namespace Sintaxis_2
             match("while");
             match("(");
             Condicion();
-            match(")");
-            if (getContenido() == "{")
-            {
-                BloqueInstrucciones(ejecuta);
-            }
-            else
-            {
-                Instruccion(ejecuta);
-            }
 
+            int inicia = caracter;
+            int lineaInicio = linea;
+            float resultado = 0;
+            string variable = getContenido();
+
+            do
+            {
+                ejecuta = Condicion() && ejecuta;
+                match(")");
+                
+                if (getContenido() == "{")
+                {
+                    BloqueInstrucciones(ejecuta);
+                }
+                else
+                {
+                    Instruccion(ejecuta);
+                }
+                if (ejecuta)
+                {
+                    Modifica(variable, resultado);
+                    archivo.DiscardBufferedData();
+                    caracter = inicia - variable.Length - 1;
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                    linea = lineaInicio;
+
+                }
+            }
+            while (ejecuta);
         }
         //Do -> do BloqueInstrucciones | Instruccion while(Condicion)
         private void Do(bool ejecuta)
-        {
+         {
             match("do");
             if (getContenido() == "{")
             {
@@ -384,13 +405,22 @@ namespace Sintaxis_2
                 }
                 if (ejecuta)
                 {
-                    Modifica(variable, resultado);
-                    archivo.DiscardBufferedData();
-                    caracter = inicia - variable.Length - 1;
-                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
-                    nextToken();
-                    linea = lineaInicio;
+                    Variable.TiposDatos tipoDatoVariable = getTipo(variable);
+                    Variable.TiposDatos tipoDatoResultado = getTipo(resultado);
 
+                    if (tipoDatoVariable >= tipoDatoResultado)
+                    {
+                        Modifica(variable, resultado);
+                        archivo.DiscardBufferedData();
+                        caracter = inicia - variable.Length - 1;
+                        archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                        nextToken();
+                        linea = lineaInicio;
+                    }
+                    else
+                    {
+                        throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
+                    }
                 }
             }
             while (ejecuta);
@@ -408,6 +438,7 @@ namespace Sintaxis_2
             match(Tipos.Identificador);
             if (getContenido() == "++")
             {
+                
                 match("++");
                 resultado = getValor(variable) + 1;
             }
@@ -486,7 +517,10 @@ namespace Sintaxis_2
                 {
                     throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
                 }
-                Console.Write(getValor(getContenido()));
+                if (ejecuta)
+                {
+                    Console.Write(getValor(getContenido()));
+                }
                 match(Tipos.Identificador);
             }
             match(")");
@@ -626,37 +660,33 @@ namespace Sintaxis_2
         }
         float castea(float resultado, Variable.TiposDatos tipoDato)
         {
+            float residuo = resultado%1;
             if(tipoDato == Variable.TiposDatos.Char)
             {
-                float residuo = resultado%1;
-                resultado = resultado%256;
-                resultado-=(char)(residuo);
-
-                /*
-                if(resultado%1 >= 5)
+                if(residuo >= 0.5)
                 {
-                    resultado++;
+                    resultado = resultado%256;
+                    return (char)resultado+1;
                 }
-                */
-                return resultado;
-                
-                
+                else
+                {
+                    resultado = resultado%256;
+                    return (char)resultado;
+                }
             }
 
             if(tipoDato == Variable.TiposDatos.Int)
             {
-                float residuo = resultado%1;
-                resultado = resultado%65556;
-                resultado-=(int)(residuo);
-
-                /*
-                if(resultado%1 >= 5)
+                if(residuo >= 0.5)
                 {
-                    resultado++;
+                    resultado = resultado%65556;
+                    return (int)resultado+1;
                 }
-                */
-                return resultado;
-                
+                else
+                {
+                    resultado = resultado%65556;
+                    return (int)resultado;
+                }
             }
 
             else
