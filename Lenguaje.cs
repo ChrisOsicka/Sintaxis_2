@@ -321,17 +321,16 @@ namespace Sintaxis_2
         //While -> while(Condicion) BloqueInstrucciones | Instruccion
         private void While(bool ejecuta)
         {
-            match("while");
-            match("(");
-            Condicion();
-
+           
             int inicia = caracter;
             int lineaInicio = linea;
             float resultado = 0;
-            string variable = getContenido();
 
             do
             {
+                match("while");
+                match("(");    
+                string variable = getContenido();
                 ejecuta = Condicion() && ejecuta;
                 match(")");
                 
@@ -347,7 +346,7 @@ namespace Sintaxis_2
                 {
                     Modifica(variable, resultado);
                     archivo.DiscardBufferedData();
-                    caracter = inicia - variable.Length - 1;
+                    caracter = inicia - 5;
                     archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
                     nextToken();
                     linea = lineaInicio;
@@ -424,6 +423,7 @@ namespace Sintaxis_2
                 }
             }
             while (ejecuta);
+            log.WriteLine("\n");
         }
 
         //Incremento -> Identificador ++ | --
@@ -544,7 +544,18 @@ namespace Sintaxis_2
             {
                 string captura = "" + Console.ReadLine();
                 float resultado = float.Parse(captura);
-                Modifica(variable, resultado);
+
+                Variable.TiposDatos tipoDatoVariable = getTipo(variable);
+                Variable.TiposDatos tipoDatoResultado = getTipo(resultado);
+
+                if (tipoDatoVariable >= tipoDatoResultado)
+                {
+                    Modifica(variable, resultado);
+                }
+                else
+                {
+                    throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
+                }
             }
             match(")");
             match(";");
