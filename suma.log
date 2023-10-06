@@ -1,4 +1,26 @@
 Autor: Guillermo Fernandez Romero
 Fecha: 3-Mayo-2023 15:09
-k =  1.5 = 1.5
-Error: de semantica, no se puede asignar un <Float> a un <Char> en la linea 13 columna 13
+i =  1 = 1
+For: i
+j =  250 = 250
+For: j
+ 250 + 2 % 0
+
+
+
+i =  1 = 1
+j =  250 = 250
+ 250 + 2 % 0j =  = 1
+i =  = 2
+i =  1 = 1
+j =  250 = 250
+ 2 % 0j =  = 251
+ 250 +i =  = 2
+-----------------
+V a r i a b l e s
+-----------------
+altura Char = 0
+i Char = 2
+j Char = 251
+k Char = 0
+-----------------

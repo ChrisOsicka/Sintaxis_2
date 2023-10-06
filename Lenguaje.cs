@@ -579,20 +579,27 @@ namespace Sintaxis_2
             if (ejecuta)
             {
                 string captura = "" + Console.ReadLine();
-                float resultado = float.Parse(captura);
-
+                float resultado;
                 Variable.TiposDatos tipoDatoVariable = getTipo(variable);
-                Variable.TiposDatos tipoDatoResultado = getTipo(resultado);
+                if (!float.TryParse(captura, out resultado))
+                    {
+                        throw new Error("Error: La entrada no es valida", log, linea, columna);
+                    }
+                    else
+                    {
+                        Variable.TiposDatos tipoDatoResultado = getTipo(resultado);
 
-                if (tipoDatoVariable >= tipoDatoResultado)
-                {
-                    Modifica(variable, resultado);
-                }
-                else
-                {
-                    Console.WriteLine("\n");
-                    throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
-                }
+                        if (tipoDatoVariable >= tipoDatoResultado)
+                        {
+                            Modifica(variable, resultado);
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n");
+                            throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
+                        }
+                        
+                    }
             }
             match(")");
             match(";");
