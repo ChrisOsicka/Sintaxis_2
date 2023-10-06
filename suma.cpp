@@ -2,67 +2,18 @@
 #include<math.h>
 #include<iostream>
 
-    char  a;
-    int   b,i;
-    float c;
+
+
+char altura,i,j,k;
 
 void main() // Funcion principal
 {
-    c = 259.5;
-    printf("C = ",c);
-    a = (char)(c);
-    printf("\na = ",a);
+    
+    //k = (int)(300);
+    //k = 1.5;
+    //k = (int)((char)(1.5));
+    
 
-    a = (char)((char)(c) + (float)(b));
-
-    if (1 == 1)
-    {
-        printf("\nHola");
-        if (1==2)
-        {
-            printf(" a todos");
-        }
-        else
-        {
-            printf(" a nadie\n");
-
-            for (i=0; i<5; i++)
-            {
-                printf("\nHola ", i);
-                printf("\n");
-            }
-            printf("\n");
-
-        }
-    }
-    else
-    {
-        printf("\nmundo\n");
-    }
-
-    i=0;
-
-    scanf("%c", &a);
-    printf("a = ", a);
-
-
-
-
-
-    while(i<5)
-    {
-        printf("\nAdios\n");
-        i++;
-    }
-
-
-}
-
-
-/*
-  k = (int)(10);
-    k = 1.5;
-    k = (int)((char)(1.5));
 
     printf("\nAltura: ");
     scanf("&i",&altura);
@@ -79,6 +30,7 @@ void main() // Funcion principal
         }
         printf("\n");
     }
+   
     printf("\nwhile:\n");
     i = 1;
     while (i <= altura)
@@ -95,6 +47,7 @@ void main() // Funcion principal
         i++;
         printf("\n");
     }
+
     printf("\ndo:\n");
     i = 1;
     do
@@ -113,4 +66,3 @@ void main() // Funcion principal
     } while (i <= altura);
 
 }
-*/

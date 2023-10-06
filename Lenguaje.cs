@@ -168,6 +168,7 @@ namespace Sintaxis_2
             }
             else
             {
+                Console.WriteLine("\n");
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> está duplicada", log, linea, columna);
             }
             match(Tipos.Identificador);
@@ -236,6 +237,7 @@ namespace Sintaxis_2
             tipoDatoExpresion = Variable.TiposDatos.Char;
             if (!Existe(getContenido()))
             {
+                Console.WriteLine("\n");
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
             }
             log.Write(getContenido() + " = ");
@@ -303,17 +305,27 @@ namespace Sintaxis_2
                 // Console.WriteLine(variable + " = "+tipoDatoVariable);
                 // Console.WriteLine(resultado + " = "+tipoDatoResultado);
                 // Console.WriteLine("expresion = "+tipoDatoExpresion);
-
-                //Variable.TiposDatos tipoDatoMayor = 
-
+                
                 if (tipoDatoVariable >= tipoDatoResultado)
                 {
-                    Modifica(variable, resultado);
+                    if (tipoDatoExpresion > tipoDatoVariable)
+                    {
+                        Console.WriteLine("\n");
+                        throw new Error("de semantica, no se puede asignar un <" + tipoDatoExpresion + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
+ 
+                    }
+                    else
+                    {
+                        Modifica(variable, resultado);
+                    }
                 }
                 else
                 {
+                    Console.WriteLine("\n");
                     throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
                 }
+             
+            
             }
             match(";");
         }
@@ -329,9 +341,9 @@ namespace Sintaxis_2
             do
             {
                 match("while");
-                match("(");    
+                match("(");
+                ejecuta = Condicion() && ejecuta;    
                 string variable = getContenido();
-                ejecuta = Condicion() && ejecuta;
                 match(")");
                 
                 if (getContenido() == "{")
@@ -346,7 +358,7 @@ namespace Sintaxis_2
                 {
                     Modifica(variable, resultado);
                     archivo.DiscardBufferedData();
-                    caracter = inicia - 5;
+                    caracter = inicia - 6;
                     archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
                     nextToken();
                     linea = lineaInicio;
@@ -358,20 +370,40 @@ namespace Sintaxis_2
         //Do -> do BloqueInstrucciones | Instruccion while(Condicion)
         private void Do(bool ejecuta)
          {
-            match("do");
-            if (getContenido() == "{")
+            int inicia = caracter;
+            int lineaInicio = linea;
+            float resultado = 0;
+            
+            do
             {
-                BloqueInstrucciones(ejecuta);
+                match("do");
+                if (getContenido() == "{")
+                {
+                    BloqueInstrucciones(ejecuta);
+                }
+                else
+                {
+                    Instruccion(ejecuta);
+                }
+                
+                match("while");
+                match("(");
+                ejecuta = Condicion() && ejecuta;    
+                string variable = getContenido();
+                match(")");
+                match(";");
+
+                if (ejecuta)
+                {
+                    Modifica(variable, resultado);
+                    archivo.DiscardBufferedData();
+                    caracter = inicia - 5;
+                    archivo.BaseStream.Seek(caracter, SeekOrigin.Begin);
+                    nextToken();
+                    linea = lineaInicio;
+                }
             }
-            else
-            {
-                Instruccion(ejecuta);
-            }
-            match("while");
-            match("(");
-            Condicion();
-            match(")");
-            match(";");
+            while(ejecuta);
         }
         //For -> for(Asignacion Condicion; Incremento) BloqueInstrucciones | Instruccion
 
@@ -418,6 +450,7 @@ namespace Sintaxis_2
                     }
                     else
                     {
+                        Console.WriteLine("\n");
                         throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
                     }
                 }
@@ -433,6 +466,7 @@ namespace Sintaxis_2
             string variable = getContenido();
             if (!Existe(getContenido()))
             {
+                Console.WriteLine("\n");
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
             }
             match(Tipos.Identificador);
@@ -515,6 +549,7 @@ namespace Sintaxis_2
                 match(",");
                 if (!Existe(getContenido()))
                 {
+                    Console.WriteLine("\n");
                     throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
                 }
                 if (ejecuta)
@@ -536,6 +571,7 @@ namespace Sintaxis_2
             match("&");
             if (!Existe(getContenido()))
             {
+                Console.WriteLine("\n");
                 throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
             }
             string variable = getContenido();
@@ -554,6 +590,7 @@ namespace Sintaxis_2
                 }
                 else
                 {
+                    Console.WriteLine("\n");
                     throw new Error("de semantica, no se puede asignar un <" + tipoDatoResultado + "> a un <" + tipoDatoVariable + ">", log, linea, columna);
                 }
             }
@@ -634,6 +671,7 @@ namespace Sintaxis_2
             {
                 if (!Existe(getContenido()))
                 {
+                    Console.WriteLine("\n");
                     throw new Error("de sintaxis, la variable <" + getContenido() + "> no está declarada", log, linea, columna);
                 }
                 stack.Push(getValor(getContenido()));
