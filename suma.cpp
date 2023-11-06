@@ -13,12 +13,14 @@ void main() // Funcion principal
     //k = 1.5;
     //k = ((char)(1.5));
     
-    k = (3+5) - (10-4);
+    k = (5+5) - (10-4);
 
+/*
     for(i=0;i<10;i++) {
         printf("\nHola");
         k=i;
     }
+*/
 
 
 /*
