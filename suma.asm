@@ -2,29 +2,17 @@ Autor: Guillermo Fernandez Romero
 Fecha: 3-Mayo-2023 15:09
 include 'emu8086.inc'
 org 100h
-MOV AX, 5
+MOV AX, 65666
 PUSH AX
-MOV AX, 5
-PUSH AX
-POP BX
 POP AX
-ADD AX, BX
-PUSH AX
-MOV AX, 10
-PUSH AX
-MOV AX, 4
-PUSH AX
-POP BX
-POP AX
-SUB AX, BX
-PUSH AX
-POP BX
-POP AX
-SUB AX, BX
-PUSH AX
+MOV BX, 65536
+DIV BX
+PUSH DX
 POP AX
 ; Asignacion k
 MOV k, AX
+printn "El valor de de k es: "
+print "130"
 int 20h
 RET
 define_scan_num

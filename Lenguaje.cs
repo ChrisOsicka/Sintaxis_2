@@ -487,11 +487,11 @@ namespace Sintaxis_2
                 if (primera)
                 {
                     asm.WriteLine("JMP " + etiquetaInicio);
+                    asm.WriteLine(etiquetaFin + ":");
                 }
                 primeraVez = false;
             }
             while (ejecuta);
-            asm.WriteLine(etiquetaFin+":");
         }
 
         //Incremento -> Identificador ++ | --
@@ -588,12 +588,16 @@ namespace Sintaxis_2
         {
             match("printf");
             match("(");
+            asm.Write("printn ");
             if (ejecuta)
             {
                 string cadena = getContenido().TrimStart('"');
                 cadena = cadena.Remove(cadena.Length - 1);
+                string cadena2 = cadena;
                 cadena = cadena.Replace(@"\n", "\n");
+                cadena2 = cadena2.Replace(@"\n", "");
                 Console.Write(cadena);
+                asm.WriteLine('"' + cadena2 + '"');
             }
             match(Tipos.Cadena);
             if (getContenido() == ",")
@@ -606,6 +610,7 @@ namespace Sintaxis_2
                 if (ejecuta)
                 {
                     Console.Write(getValor(getContenido()));
+                    asm.WriteLine("print " + '"' + getValor(getContenido()) + '"');
                 }
                 match(Tipos.Identificador);
             }
@@ -631,6 +636,8 @@ namespace Sintaxis_2
                 string captura = "" + Console.ReadLine();
                 float resultado = float.Parse(captura);
                 Modifica(variable, resultado);
+                asm.WriteLine("call scan_num");
+                asm.WriteLine("MOV "+variable+", CX");
             }
             match(")");
             match(";");
@@ -796,10 +803,12 @@ namespace Sintaxis_2
                 {
                     tipoDatoExpresion = tipoDatoCast;
                     stack.Push(castea(stack.Pop(), tipoDatoCast));
+                    /*
                     if (primeraVez)
                     {
                         asm.WriteLine("POP AX");
                     }
+                    */
                 }
             }
         }
@@ -807,8 +816,15 @@ namespace Sintaxis_2
         {
             switch (tipoDato)
             {
-                case Variable.TiposDatos.Char: return MathF.Round(resultado) % 256;
-                case Variable.TiposDatos.Int : return MathF.Round(resultado) % 65536;
+                case Variable.TiposDatos.Char:
+                asm.WriteLine("POP AX");
+                asm.WriteLine("MOV BX, 256");
+                asm.WriteLine("DIV BX");
+                asm.WriteLine("PUSH DX");
+                return MathF.Round(resultado) % 256;
+
+                case Variable.TiposDatos.Int :
+                return MathF.Round(resultado) % 65536;
             }
             return resultado;
         }

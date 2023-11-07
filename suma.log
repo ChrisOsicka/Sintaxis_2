@@ -1,11 +1,11 @@
 Autor: Guillermo Fernandez Romero
 Fecha: 3-Mayo-2023 15:09
-k =  5 5 + 10 4 - - = 4
+k =  65666 = 130
 -----------------
 V a r i a b l e s
 -----------------
-altura Char = 0
-i Char = 0
-j Char = 0
-k Char = 4
+altura Int = 0
+i Int = 0
+j Int = 0
+k Int = 130
 -----------------

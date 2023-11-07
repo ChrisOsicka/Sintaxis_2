@@ -4,16 +4,23 @@
 
 
 
-char altura,i,j,k;
+int altura,i,j,k;
 
 void main() // Funcion principal
 {
     
-   // k = (int)(300);
+    k = (int)(65666);
     //k = 1.5;
     //k = ((char)(1.5));
     
-    k = (5+5) - (10-4);
+    /*
+    printf("Ingrese un numero: ");
+    scanf("%d", &k);
+    */
+    printf("El valor de de k es: ", k);
+
+    //k = (5+5) - (10-4);
+    //printf("\nPrograma finalizado");
 
 /*
     for(i=0;i<10;i++) {
