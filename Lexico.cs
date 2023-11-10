@@ -4,63 +4,68 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 
+// Requerimiento 1: Caracter -> #D?D?D?
+// Requerimiento 2: Inicio -> { 
+//                  Fin -> }
+// Requerimiento 3: Comentarios
+
 namespace Sintaxis_2
 {
     public class Lexico : Token, IDisposable
     {
         const int F = -1;
         const int E = -2;
-
+        DateTime thisDay = DateTime.Now;
         int[,] TRAND =
-        { 
-          // 0   1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
-          // WS  L  D  .  =  :  ;  &  |  >  <  !  +  -  *  /  %  "  ' EOF ?  # lmd {  } EOL
-            { 0, 1, 2,26, 5, 7, 9,10,11,13,14,15,17,18,20,33,20,22,24, F,25,27,26,31,32, 0}, //  0
-            { F, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,31, F, F}, //  1
-            { F, F, 2, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  2
-            { E, E, 4, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, F}, //  3
-            { F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  4
-            { F, F, F, F, 6, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  5
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  6
-            { F, F, F, F, 8, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  7
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  8
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, //  9
-            { F, F, F, F, F, F, F,12, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 10
-            { F, F, F, F, F, F, F, F,12, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 11
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 12
-            { F, F, F, F,16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 13
-            { F, F, F, F,16, F, F, F, F,16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 14
-            { F, F, F, F, 6, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 15
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 16
-            { F, F, F, F,19, F, F, F, F, F, F, F,19, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 17
-            { F, F, F, F,19, F, F, F, F, F, F, F, F,19, F, F, F, F, F, F, F, F, F, F, F, F}, // 18
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 19
-            { F, F, F, F,21, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 20
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 21
-            {22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,22, E,22,22,22,22,22, F}, // 22
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 23
-            {24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,23, E,24,24,24,24,24, F}, // 24
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 25
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 26
-            { F, F,28, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 27
-            { F, F,29, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 28
-            { F, F,30, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 29
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 30
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 31
-            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F}, // 32
-            { F, F, F, F,21, F, F, F, F, F, F, F, F, F,35,34, F, F, F, F, F, F, F, F, F, F}, // 33
-            {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34, F,34,34,34,34,34, 0}, // 34
-            {35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,35,35,35,35, E,35,35,35,35,35,35}, // 35
-            {35,35,35,35,35,35,35,35,35,35,35,35,35,35,36, 0,35,35,35, E,35,35,35,35,35,35}, // 36
-          // WS  L  D  .  =  :  ;  &  |  >  <  !  +  -  *  /  %  "  ' EOF ?  # lmd {  }  \n
-          // 0   1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+        {
+          // 0   1  2  3  3  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22  23 24  25
+          // WS  L  D  .  =  :  ;  &  |  >  <  !  +  -  *  /  %  "  ' EOF ?  # lmd  {  }   \n
+            { 0, 1, 2,26, 5, 7, 9,10,11,13,14,15,17,18,20,33,20,22,24, F,25,27,26,   31,32,0},  //  0
+            { F, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,  31,F,  F }, //  1
+            { F, F, 2, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  2
+            { E, E, 4, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E,   E,E,  E }, //  3
+            { F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  4
+            { F, F, F, F, 6, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  5
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  6
+            { F, F, F, F, 8, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  7
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  8
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, //  9
+            { F, F, F, F, F, F, F,12, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 10
+            { F, F, F, F, F, F, F, F,12, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 11
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 12
+            { F, F, F, F,16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 13
+            { F, F, F, F,16, F, F, F, F,16, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 14
+            { F, F, F, F, 6, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 15
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 16
+            { F, F, F, F,21, F, F, F, F, F, F, F,19, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 17
+            { F, F, F, F,21, F, F, F, F, F, F, F, F,19, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 18
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 19
+            { F, F, F, F,21, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 20
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 21
+            {22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,22,23,22, E,22,22,22,   22,22,22}, // 22
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 23
+            {24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,24,23, E,24,24,24,   24,24,24}, // 24
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 25
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 26
+            { F, F,28, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 27
+            { F, F,29, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 28
+            { F, F,30, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 29
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 30
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 31
+            { F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F,   F,F,  F }, // 32
+            { F, F, F, F,21, F, F, F, F, F, F, F, F, F,35,34, F, F, F, F, F, F, F,   F, F, F }, // 33
+            {34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34,34, F,34,34, 34, 34,34, 0 }, // 34
+            {35,35,35,35,35,35,35,35,35,35,35,35,35,35,36,35,35,35,35, E,35,35, 35, 35,35, 35}, // 35
+            {35,35,35,35,35,35,35,35,35,35,35,35,35,35,36, 0,35,35,35, E,35,35, 35, 35,35, 35}, // 36 
+          // WS  L  D  .  =  :  ;  &  |  >  <  !  +  -  *  /  %  "  ' EOF ?  # lmds  {   } \n
         };
         protected StreamReader archivo;
         protected StreamWriter log;
+ 
         protected StreamWriter asm;
-
         protected int linea;
         protected int columna;
+
         protected int caracter;
         public Lexico()
         {
@@ -69,10 +74,11 @@ namespace Sintaxis_2
             asm = new StreamWriter("prueba.asm");
             log.AutoFlush = true;
             asm.AutoFlush = true;
-            log.WriteLine("Autor: Guillermo Fernandez Romero");
-            log.WriteLine("Fecha: 3-Mayo-2023 15:09");
-            asm.WriteLine("Autor: Guillermo Fernandez Romero");
-            asm.WriteLine("Fecha: 3-Mayo-2023 15:09");
+            log.WriteLine("Autor: Erick Jair Becerra Acosta");
+            log.WriteLine(thisDay.ToString("F"));
+            //asm.WriteLine("Autor: Erick Jair Becerra Acosta");
+            //asm.WriteLine(thisDay.ToString("F"));
+           
             if (File.Exists("prueba.cpp"))
             {
                 archivo = new StreamReader("prueba.cpp");
@@ -89,10 +95,9 @@ namespace Sintaxis_2
             asm = new StreamWriter(Path.GetFileNameWithoutExtension(nombre) + ".asm");
             log.AutoFlush = true;
             asm.AutoFlush = true;
-            log.WriteLine("Autor: Guillermo Fernandez Romero");
-            log.WriteLine("Fecha: 3-Mayo-2023 15:09");
-            asm.WriteLine("Autor: Guillermo Fernandez Romero");
-            asm.WriteLine("Fecha: 3-Mayo-2023 15:09");
+            log.WriteLine("Autor: Figueroa Osicka Christian Andres");
+            log.WriteLine(thisDay.ToString("F"));
+           
             if (Path.GetExtension(nombre) != ".cpp")
             {
                 throw new Error("El archivo " + nombre + " no tiene extension CPP", log, linea, columna);
@@ -111,7 +116,6 @@ namespace Sintaxis_2
         {
             archivo.Close();
             log.Close();
-            asm.Close();
         }
         private int Columna(char t)
         {
@@ -292,7 +296,7 @@ namespace Sintaxis_2
             }
             if (!FinArchivo())
             {
-                // log.WriteLine(getContenido() + " | " + getClasificacion());
+         //       log.WriteLine(getContenido() + " | " + getClasificacion());
             }
             if (Estado == E)
             {

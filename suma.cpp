@@ -8,8 +8,8 @@ int altura,i,j,k;
 
 void main() // Funcion principal
 {
-    
-    k = (int)(65666);
+    i = 300;
+    k = 1 + (char)(i);
     //k = 1.5;
     //k = ((char)(1.5));
     
@@ -17,15 +17,40 @@ void main() // Funcion principal
     printf("Ingrese un numero: ");
     scanf("%d", &k);
     */
+
+   /*
     printf("El valor de de k es: ", k);
+    printf("\nIntrduzca un valor para j: ");
+    scanf("%d", &j);
+    printf("El valor de de j es: ", j);
+    */
 
     //k = (5+5) - (10-4);
     //printf("\nPrograma finalizado");
 
 /*
-    for(i=0;i<10;i++) {
-        printf("\nHola");
+    for(i=0;i<10;i++) 
+    {
+        printf("\nHola\n");
+
+        for(j=0;j<3;j++) 
+        {
+            printf(".");
+        }
+
         k=i;
+    }
+
+    for (i = 1; i <= altura; i++)
+    {
+        for (j = 250; j < 250+i; j++)
+        {
+            if (j%2==0)
+                printf("-");
+            else
+                printf("+");
+        }
+        printf("\n");
     }
 */
 
